@@ -1,13 +1,7 @@
 #!/usr/bin/env tarantool
-local queue         = require("queue")
 local openapi       = require("gtn.openapi")
 
-local queue_handler = require("modules.queue_handler")
-
 require("modules.init")
-
---daemons
-require("daemons.clear_requests")
 
 local app = openapi(
         require("http.server"),
@@ -15,8 +9,7 @@ local app = openapi(
         "openapi.yaml",
         {
             security = {},
-            cors     = {},
-            metrics  = app_config.metrics
+            cors     = {}
         }
 )
 
@@ -58,6 +51,3 @@ app:security_error_handler(
 )
 
 app:start()
-
-channels = {}
-queue.tube.request_queue:on_task_change(queue_handler.handler)
