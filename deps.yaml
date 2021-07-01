@@ -1,0 +1,5 @@
+---
+gtn:
+  - gtn-openapi@scm-3
+tarantool:
+  - http

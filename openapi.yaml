@@ -1,0 +1,248 @@
+openapi: 3.0.0
+info:
+  version: "1.0"
+  title: "trading bot"
+servers:
+  - url: http://localhost:8080/
+    description: 'test'
+  - url: http://localhost:{port}/
+    description: 'development'
+    variables:
+      path:
+        default: 'api/v1.0'
+      port:
+        default: '8080'
+  - url: 'staging'
+    description: 'staging'
+    variables:
+      path:
+        default: 'api/v1.0'
+      socket:
+        default: 'tr_bot.dev.sock'
+      socketPath:
+        default: 'tmp'
+  - url: 'prod'
+    description: 'production'
+    variables:
+      path:
+        default: 'api/v1.0'
+      socket:
+        default: 'tr_bot.sock'
+      socketPath:
+        default: 'tmp'
+paths:
+  /instr/add:
+    post:
+      tags:
+        - instr
+      summary: add new instrument for trade
+      operationId: add
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tirb_uid
+                - price_min
+                - price_max
+                - auto_calculation
+                - step_buy
+                - step_sell
+                - active
+              properties:
+                tirb_uid:
+                  type: string
+                  format: uuid
+                price_min:
+                  type: number
+                price_max:
+                  type: number
+                auto_calculation:
+                  type: boolean
+                buy_one_step:
+                  type: number
+                with_margin:
+                  type: boolean
+                step_buy:
+                  type: number
+                step_sell:
+                  type: number
+                buy_always:
+                  type: boolean
+                date_start:
+                  type: string
+                  format: "date"
+                date_end:
+                  type: string
+                  format: "date"
+                active:
+                  type: boolean
+      responses:
+        200:
+          description: return ip adress data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /instr/update:
+    post:
+      tags:
+        - instr
+      summary: update instrument
+      operationId: update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tirb_uid
+                - price_min
+                - price_max
+                - auto_calculation
+                - step_buy
+                - step_sell
+                - active
+              properties:
+                tirb_uid:
+                  type: string
+                  format: uuid
+                price_min:
+                  type: number
+                price_max:
+                  type: number
+                auto_calculation:
+                  type: boolean
+                buy_one_step:
+                  type: number
+                with_margin:
+                  type: boolean
+                step_buy:
+                  type: number
+                step_sell:
+                  type: number
+                buy_always:
+                  type: boolean
+                date_start:
+                  type: string
+                  format: "date"
+                date_end:
+                  type: string
+                  format: "date"
+                active:
+                  type: boolean
+      responses:
+        200:
+          description: return ip adress data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /instr/disable:
+    post:
+      tags:
+        - instr
+      summary: disable instrument for trade
+      operationId: disable
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tirb_uid
+              properties:
+                tirb_uid:
+                  type: string
+                  format: uuid
+      responses:
+        200:
+          description: return ip adress data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /instr/enable:
+    post:
+      tags:
+        - instr
+      summary: enable instrument for trade
+      operationId: enable
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tirb_uid
+              properties:
+                tirb_uid:
+                  type: string
+                  format: uuid
+      responses:
+        200:
+          description: return ip adress data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /instr/stat:
+    post:
+      tags:
+        - instr
+      summary: get statistics about instrument and orders instrument
+      operationId: stat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tirb_uid
+              properties:
+                tirb_uid:
+                  type: string
+                  format: uuid
+      responses:
+        200:
+          description: return ip adress data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  error:
+                    type: string
+                  message:
+                    type: string
