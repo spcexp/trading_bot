@@ -11,4 +11,6 @@ if status then
 end
 
 box.cfg(app_config.box_config)
-box.once("init", create_spaces())
+box.once("init", function()
+    create_spaces()
+end)

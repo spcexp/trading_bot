@@ -22,7 +22,6 @@ function FF:new()
         }
 
         local result              = http_client:post(link, params, options)
-
         local status, result_body = pcall(json.decode, result.body)
 
         if not status or result.status ~= 200 then
@@ -32,17 +31,38 @@ function FF:new()
             return false
         end
 
-        if not result_body.Success then
-            log.error('Error code: ' .. result_body.ErrorCode)
-            log.error('Error message: ' .. result_body.Message)
-            log.error('Error details: ' .. result_body.Details)
-            return false, result_body
-        end
-
         return result_body
     end
 
     function private:sign(...)
+
+    end
+
+    function public:set_order()
+
+    end
+
+    function public:cancel_order()
+
+    end
+
+    function public:query_order()
+
+    end
+
+    function public:open_orders()
+
+    end
+
+    function public:symbol_info()
+
+    end
+
+    function public:balance()
+
+    end
+
+    function public:order_book()
 
     end
 
