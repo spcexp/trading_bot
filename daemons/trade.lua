@@ -1,0 +1,1 @@
+local freedom_finance = require("models.freedom_finance"):new()

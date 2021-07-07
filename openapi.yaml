@@ -12,7 +12,7 @@ servers:
         default: 'api/v1.0'
       port:
         default: '8080'
-  - url: 'staging'
+  - url: '/'#TODO
     description: 'staging'
     variables:
       path:
@@ -21,7 +21,7 @@ servers:
         default: 'tr_bot.dev.sock'
       socketPath:
         default: 'tmp'
-  - url: 'prod'
+  - url: '/'#TODO
     description: 'production'
     variables:
       path:
@@ -90,8 +90,8 @@ paths:
                     type: boolean
                   error:
                     type: string
-                  message:
-                    type: string
+                  data:
+                    type: object
   /instr/update:
     post:
       tags:
@@ -151,8 +151,8 @@ paths:
                     type: boolean
                   error:
                     type: string
-                  message:
-                    type: string
+                  data:
+                    type: object
   /instr/disable:
     post:
       tags:
@@ -182,8 +182,8 @@ paths:
                     type: boolean
                   error:
                     type: string
-                  message:
-                    type: string
+                  data:
+                    type: object
   /instr/enable:
     post:
       tags:
@@ -213,8 +213,8 @@ paths:
                     type: boolean
                   error:
                     type: string
-                  message:
-                    type: string
+                  data:
+                    type: object
   /instr/stat:
     post:
       tags:
@@ -244,5 +244,5 @@ paths:
                     type: boolean
                   error:
                     type: string
-                  message:
-                    type: string
+                  data:
+                    type: object

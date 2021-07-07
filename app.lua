@@ -1,5 +1,5 @@
 #!/usr/bin/env tarantool
-local openapi       = require("gtn.openapi")
+local openapi = require("gtn.openapi")
 
 require("modules.init")
 
@@ -19,8 +19,8 @@ app:default(
             return self:render({
                 status = 204,
                 json   = {
-                    success = false,
-                    error   = err
+                    result = false,
+                    error  = err
                 }
             })
         end
@@ -31,8 +31,8 @@ app:error_handler(
         function(self, err)
             return self:render({
                 json = {
-                    success = false,
-                    error   = err
+                    result = false,
+                    error  = err
                 }
             })
         end
@@ -45,6 +45,18 @@ app:security_error_handler(
                 status = 401,
                 json   = {
                     error = err
+                }
+            })
+        end
+)
+
+app:not_found_handler(
+        function(self)
+            return self:render({
+                status = 404,
+                json   = {
+                    result = false,
+                    error  = "Not found"
                 }
             })
         end

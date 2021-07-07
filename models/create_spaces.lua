@@ -25,7 +25,7 @@ local schema = {
         { name = "tiiw_uid", type = "uuid",    is_nullable = false },
         { name = "price",    type = "decimal", is_nullable = false },
         { name = "type",     type = "string",  is_nullable = false }, -- buy/sell
-        { name = "buy_uid",  type = "uuid",     is_nullable = false },
+        { name = "buy_uid",  type = "uuid",    is_nullable = false },
         { name = "time",     type = "string",  is_nullable = false }
     }
 }
