@@ -51,7 +51,7 @@ end
 function _M.disable(self)
     local params                = self:json()
 
-    local inst_data, inst_error = storage.disable_tr_instrument(params.tirb_uid)
+    local inst_data, inst_error = storage.disable_tr_instrument(params.uid)
     if inst_error then
         return self:render({
             json = {
@@ -74,7 +74,7 @@ end
 function _M.enable(self)
     local params                = self:json()
 
-    local inst_data, inst_error = storage.enable_tr_instrument(params.tirb_uid)
+    local inst_data, inst_error = storage.enable_tr_instrument(params.uid)
     if inst_error then
         return self:render({
             json = {
@@ -97,7 +97,7 @@ end
 function _M.stat(self)
     local params                = self:json()
 
-    local inst_data, inst_error = storage.get_tr_instrument(params.tirb_uid)
+    local inst_data, inst_error = storage.find_tr_instrument(params.uid)
     if inst_error then
         return self:render({
             json = {

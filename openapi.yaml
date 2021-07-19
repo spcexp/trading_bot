@@ -43,7 +43,8 @@ paths:
             schema:
               type: object
               required:
-                - tirb_uid
+                - symbol
+                - deposit
                 - price_min
                 - price_max
                 - auto_calculation
@@ -51,9 +52,10 @@ paths:
                 - step_sell
                 - active
               properties:
-                tirb_uid:
+                symbol:
                   type: string
-                  format: uuid
+                deposit:
+                  type: number
                 price_min:
                   type: number
                 price_max:
@@ -104,17 +106,26 @@ paths:
             schema:
               type: object
               required:
-                - tirb_uid
+                - symbol
                 - price_min
                 - price_max
                 - auto_calculation
+                - buy_one_step
+                - with_margin
                 - step_buy
                 - step_sell
+                - buy_always
+                - date_start
+                - date_end
                 - active
               properties:
-                tirb_uid:
+                uid:
                   type: string
                   format: uuid
+                symbol:
+                  type: string
+                deposit:
+                  type: number
                 price_min:
                   type: number
                 price_max:
@@ -165,9 +176,9 @@ paths:
             schema:
               type: object
               required:
-                - tirb_uid
+                - uid
               properties:
-                tirb_uid:
+                uid:
                   type: string
                   format: uuid
       responses:
@@ -196,9 +207,9 @@ paths:
             schema:
               type: object
               required:
-                - tirb_uid
+                - uid
               properties:
-                tirb_uid:
+                uid:
                   type: string
                   format: uuid
       responses:
@@ -227,9 +238,9 @@ paths:
             schema:
               type: object
               required:
-                - tirb_uid
+                - uid
               properties:
-                tirb_uid:
+                uid:
                   type: string
                   format: uuid
       responses:

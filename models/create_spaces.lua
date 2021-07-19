@@ -1,7 +1,7 @@
 local schema = {
-    tr_instrument_ref_book = {
+    symbol_book = {
         { name = "uid",  type = "uuid",   is_nullable = false },
-        { name = "name", type = "string", is_nullable = false },
+        { name = "symbol", type = "string", is_nullable = false },
         { name = "data", type = "map",    is_nullable = false }
     },
     tr_instrument          = {
@@ -11,11 +11,11 @@ local schema = {
         { name = "price_min",        type = "decimal",  is_nullable = false },
         { name = "price_max",        type = "decimal",  is_nullable = false },
         { name = "auto_calculation", type = "boolean",  is_nullable = false },
-        { name = "buy_one_step",     type = "unsigned", is_nullable = false },
+        { name = "buy_one_step",     type = "unsigned", is_nullable = false }, -- Сколько покупать если auto_calculation = false
         { name = "with_margin",      type = "boolean",  is_nullable = false },
         { name = "step_buy",         type = "decimal",  is_nullable = false },
         { name = "step_sell",        type = "decimal",  is_nullable = false },
-        { name = "buy_always",       type = "boolean",  is_nullable = false },
+        { name = "buy_always",       type = "boolean",  is_nullable = false }, -- всегда докупать если есть депозит
         { name = "date_start",       type = "string",   is_nullable = false },
         { name = "date_end",         type = "string",   is_nullable = false },
         { name = "active",           type = "boolean",  is_nullable = false }
