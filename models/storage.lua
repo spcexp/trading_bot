@@ -1,4 +1,4 @@
-local ff      = require("models.freedom_finance").new()
+local ff      = require("models.freedom_finance"):new()
 
 local log     = require("log")
 local uuid    = require("uuid")
@@ -138,6 +138,69 @@ function storage.enable_tr_instrument(uid)
         { "=", 14, true },
     })
     return update_result:tomap({ names_only = true })
+end
+
+function storage.add_order(params)
+    local exist = storage.is_order_exist(params.trin_uid, params.level)
+    if exist then
+        return nil, 'Order already exist'
+    end
+
+    local data       = {
+        uid      = uuid.new(),
+        trin_uid = params.trin_uid,
+        price    = params.price,
+        quantity = params.quantity,
+        type     = params.type,
+        level    = params.level,
+        ff_id    = params.ff_id,
+        buy_uid  = params.buy_uid,
+        time     = params.time,
+        status   = nil
+    }
+
+    local tuple, err = box.space.orders:frommap(data)
+    if err then
+        return nil, err
+    end
+    local insert_result = box.space.orders:insert(tuple)
+    return insert_result:tomap({ names_only = true })
+end
+
+function storage.set_remote_id(uid, remote_id)
+    local _, err = storage.find_order(uid)
+    if err then
+        return nil, err
+    end
+
+    local update_result = box.space.order:update({
+        uid,
+        { "=", 7, remote_id }
+    })
+    return update_result:tomap({ names_only = true })
+end
+
+function storage.find_order(uid)
+    local order = box.space.order:get(uid)
+
+    if not order then
+        log.warn("Dont find order data for " .. uid)
+        return nil, "Dont find order data for " .. uid
+    end
+
+    return order
+end
+
+function storage.is_order_exist(trin_uid, level)
+    local statuses = {"1", "10", "11", "12", "20", "21"}
+    for _, status in pairs(statuses) do
+        local order = box.space.order.index.uniq:get(trin_uid, level, status)
+        if order then
+            return true
+        end
+    end
+
+    return false
 end
 
 return storage
