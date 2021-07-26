@@ -28,8 +28,52 @@ local function count_quantity()
     --TODO
 end
 
-local function sellCurrentOrder()
-    
+local function sellCurrentOrder(uid, symbol_data)
+    local order_buy, err = storage.find_order(uid)
+    if err then
+        log.error(err)
+        return
+    end
+    local instr, err = storage.find_tr_instrument(order_buy.trin_uid)
+    if err then
+        log.error(err)
+        return
+    end
+
+    local step            = 100 * instr.step_sell / instr.price_max
+    local price           = order_buy.price + step
+    local order_sell, err = storage.add_order({
+        trin_uid = instr.uid,
+        price    = price,
+        quantity = order_buy.quantity,
+        type     = "sell",
+        level    = order_buy.level,
+        ff_id    = nil,
+        buy_uid  = order_buy.uid,
+        time     = os.date("%X")
+    })
+    if err then
+        log.error(err)
+        return
+    end
+
+    local ff_order, err = ff:set_order(
+            symbol_data.symbol,
+            actions.sell,
+            order_type.limit,
+            order_buy.quantity,
+            price,
+            0,
+            expiration.gtc
+    )
+    if err then
+        log.error(err)
+        return
+    end
+    local _, err = storage.set_remote_id(order_sell.uid, ff_order.order_id)
+    if err then
+        log.error(err)
+    end
 end
 
 fiber.create(function()
@@ -41,11 +85,10 @@ fiber.create(function()
             local steps_count = (instr.price_max - instr.price_min) / step
             local quantity    = instr.buy_one_step
             for i = 1, steps_count do
-                local quantity
                 if instr.auto_calculation then
                     quantity = count_quantity()
                 end
-                local price         = instr.price_max - step * i
+                local price              = instr.price_max - step * i
                 local storage_order, err = storage.add_order({
                     trin_uid = instr.uid,
                     price    = price,
@@ -59,7 +102,7 @@ fiber.create(function()
                 if not storage_order then
                     log.error(err)
                 else
-                    local ff_order, err        = ff:set_order(
+                    local ff_order, err = ff:set_order(
                             symbol_data.symbol,
                             actions.buy,
                             order_type.limit,
@@ -75,26 +118,11 @@ fiber.create(function()
                         if err then
                             log.error(err)
                         end
-                        fiber.create(function()
-                            sellCurrentOrder()
-                        end)
+                        sellCurrentOrder(storage_order.uid, symbol_data)
                     end
                 end
             end
         end
-
-
-        -- получить торгуемые интрументы
-        -- запустить цикл по всем активным инструментам
-        -- получить текущую цену текущего интрумента
-        -- создать заявки на покупку на все возможные уровни начиная от максимальной цены
-        -- (уровни рассчитываются так: (price_max - price_min) / step = количество уровней,
-        -- step = 100 * step_buy_percent / max_price,
-        -- 0 уровень = price_max, 1 уровень = price_max - step, 2 уровень = price_max - 2 * step
-        -- level = price_max - level_number * step)
-        -- если уровень освободился и цена текущая выше, то создаем новую заявку на покупку
-        -- запускаем для каждой заявки файбер на продажу
-        -- если все уровни заняты, то не делаем ничего
         fiber.sleep(60)
     end
 end)
