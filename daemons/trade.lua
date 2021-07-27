@@ -28,7 +28,32 @@ local function count_quantity()
     --TODO
 end
 
-local function sellCurrentOrder(uid, symbol_data)
+local function watch_order(uid)
+    while true do
+        local order_buy, err = storage.find_order(uid)
+        if err then
+            log.error(err)
+            goto continue
+        end
+
+        local order_data, err = ff:query_order(order_buy.ff_id)
+        if err then
+            log.error(err)
+            goto continue
+        end
+
+        local _, err = storage.set_order_status(uid, order_data.stat)
+        if err then
+            log.error(err)
+            goto continue
+        end
+
+        :: continue ::
+        fiber.sleep(60)
+    end
+end
+
+local function set_sell_order(uid, symbol_data)
     local order_buy, err = storage.find_order(uid)
     if err then
         log.error(err)
@@ -73,10 +98,14 @@ local function sellCurrentOrder(uid, symbol_data)
     local _, err = storage.set_remote_id(order_sell.uid, ff_order.order_id)
     if err then
         log.error(err)
+        return
     end
+    fiber.create(function()
+        watch_order(order_sell.uid)
+    end)
 end
 
-fiber.create(function()
+fiber.create(function() -- TODO calc deposit, watch date start, date end, buy_always
     while true do
         local instrs = box.space.tr_instrument.index.active:select { true }
         for _, instr in pairs(instrs) do
@@ -118,7 +147,10 @@ fiber.create(function()
                         if err then
                             log.error(err)
                         end
-                        sellCurrentOrder(storage_order.uid, symbol_data)
+                        fiber.create(function()
+                            watch_order(storage_order.uid)
+                        end)
+                        set_sell_order(storage_order.uid, symbol_data)
                     end
                 end
             end

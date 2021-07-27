@@ -38,31 +38,15 @@ function FF:new()
 
     end
 
-    function public:set_order()
-
-    end
-
-    function public:cancel_order()
-
-    end
-
     function public:query_order()
 
     end
 
-    function public:open_orders()
+    function public:set_order()
 
     end
 
     function public:symbol_info()
-
-    end
-
-    function public:balance()
-
-    end
-
-    function public:order_book()
 
     end
 

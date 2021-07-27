@@ -17,7 +17,7 @@ function storage.find_symbol_book_by_symbol(symbol)
 end
 
 function storage.add_symbol_book(symbol)
-    local symbol_data, err = ff.symbol_info(symbol)
+    local symbol_data, err = ff:symbol_info(symbol)
     if err ~= nil then
         return nil, err
     end
@@ -201,6 +201,19 @@ function storage.is_order_exist(trin_uid, level)
     end
 
     return false
+end
+
+function storage.set_order_status(uid, status)
+    local _, err = storage.find_order(uid)
+    if err then
+        return nil, err
+    end
+
+    local update_result = box.space.order:update({
+        uid,
+        { "=", 10, status }
+    })
+    return update_result:tomap({ names_only = true })
 end
 
 return storage
