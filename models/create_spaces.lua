@@ -1,8 +1,8 @@
 local schema = {
     symbol_book = {
-        { name = "uid",  type = "uuid",   is_nullable = false },
+        { name = "uid",    type = "uuid",   is_nullable = false },
         { name = "symbol", type = "string", is_nullable = false },
-        { name = "data", type = "map",    is_nullable = false }
+        { name = "data",   type = "map",    is_nullable = false }
     },
     tr_instrument          = {
         { name = "uid",              type = "uuid",     is_nullable = false },
@@ -16,15 +16,16 @@ local schema = {
         { name = "step_buy",         type = "decimal",  is_nullable = false },
         { name = "step_sell",        type = "decimal",  is_nullable = false },
         { name = "buy_always",       type = "boolean",  is_nullable = false }, -- всегда докупать если есть депозит
-        { name = "date_start",       type = "string",   is_nullable = false },
-        { name = "date_end",         type = "string",   is_nullable = false },
-        { name = "active",           type = "boolean",  is_nullable = false }
+        { name = "date_start",       type = "number",   is_nullable = false },
+        { name = "date_end",         type = "number",   is_nullable = false },
+        { name = "active",           type = "boolean",  is_nullable = false },
+        { name = "current_deposit",  type = "decimal",  is_nullable = true }
     },
     orders                 = {
         { name = "uid",      type = "uuid",    is_nullable = false },
         { name = "trin_uid", type = "uuid",    is_nullable = false },
         { name = "price",    type = "decimal", is_nullable = false },
-        { name = "quantity", type = "number", is_nullable = false },
+        { name = "quantity", type = "number",  is_nullable = false },
         { name = "type",     type = "string",  is_nullable = false }, -- buy/sell
         { name = "level",    type = "number",  is_nullable = false },
         { name = "ff_id",    type = "string",  is_nullable = true },

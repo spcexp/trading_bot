@@ -30,13 +30,13 @@ end
 
 local function watch_order(uid)
     while true do
-        local order_buy, err = storage.find_order(uid)
+        local order, err = storage.find_order(uid)
         if err then
             log.error(err)
             goto continue
         end
 
-        local order_data, err = ff:query_order(order_buy.ff_id)
+        local order_data, err = ff:query_order(order.ff_id)
         if err then
             log.error(err)
             goto continue
@@ -46,6 +46,20 @@ local function watch_order(uid)
         if err then
             log.error(err)
             goto continue
+        end
+
+        if order.type == "sell" and order_data.stat == 21 then
+            local instr, err = storage.find_tr_instrument(order.trin_uid)
+            if err then
+                log.error(err)
+                goto continue
+            end
+            local current_deposit = instr.current_deposit + order.quantity * order.price
+            local _, err = storage.set_current_deposit(instr.uid, current_deposit)
+            if err then
+                log.error(err)
+                goto continue
+            end
         end
 
         :: continue ::
@@ -105,10 +119,21 @@ local function set_sell_order(uid, symbol_data)
     end)
 end
 
-fiber.create(function() -- TODO calc deposit, watch date start, date end, buy_always
+fiber.create(function()
     while true do
         local instrs = box.space.tr_instrument.index.active:select { true }
         for _, instr in pairs(instrs) do
+            local date_current = os.time(os.date("!*t"))
+            if instr.date_start >= date_current then
+                goto next
+            end
+            if date_current >= instr.date_end then
+                local _, err = storage.disable_tr_instrument(instr.uid)
+                if err ~= nil then
+                    log.error(err)
+                end
+                goto next
+            end
             local symbol_data = box.space.symbol_book.index.symbol:get(instr.tirb_uid)
             local step        = 100 * instr.step_buy / instr.price_max
             local steps_count = (instr.price_max - instr.price_min) / step
@@ -143,6 +168,7 @@ fiber.create(function() -- TODO calc deposit, watch date start, date end, buy_al
                     if err ~= nil then
                         log.error(err)
                     else
+                        instr.current_deposit = instr.current_deposit - quantity * price
                         local _, err = storage.set_remote_id(storage_order.uid, ff_order.order_id)
                         if err then
                             log.error(err)
@@ -154,6 +180,20 @@ fiber.create(function() -- TODO calc deposit, watch date start, date end, buy_al
                     end
                 end
             end
+
+            local _, err = storage.set_current_deposit(instr.uid, instr.current_deposit)
+            if err then
+                log.error(err)
+            end
+
+            if not instr.buy_always then
+                local _, err = storage.disable_tr_instrument(instr.uid)
+                if err ~= nil then
+                    log.error(err)
+                end
+            end
+
+            :: next ::
         end
         fiber.sleep(60)
     end

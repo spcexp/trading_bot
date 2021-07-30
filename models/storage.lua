@@ -59,7 +59,8 @@ function storage.add_tr_instrument(params)
         buy_always       = params.buy_always and params.buy_always or true,
         date_start       = params.date_start and params.date_start or os.date("%Y-%m-%d"),
         date_end         = params.date_end and params.date_end or "",
-        active           = params.active
+        active           = params.active,
+        current_deposit  = params.deposit
     }
 
     local tuple, err = box.space.tr_instrument:frommap(data)
@@ -71,7 +72,7 @@ function storage.add_tr_instrument(params)
 end
 
 function storage.update_tr_instrument(params)
-    local _, err = storage.find_tr_instrument(params.uid)
+    local instr, err = storage.find_tr_instrument(params.uid)
     if err ~= nil then
         return nil, err
     end
@@ -99,6 +100,7 @@ function storage.update_tr_instrument(params)
         { "=", 12, params.date_start },
         { "=", 13, params.date_end },
         { "=", 14, params.active },
+        { "=", 15, instr.current_deposit },
     })
     return update_result:tomap({ names_only = true })
 end
@@ -212,6 +214,19 @@ function storage.set_order_status(uid, status)
     local update_result = box.space.order:update({
         uid,
         { "=", 10, status }
+    })
+    return update_result:tomap({ names_only = true })
+end
+
+function storage.set_current_deposit(uid, deposit)
+    local _, err = storage.find_tr_instrument(uid)
+    if err then
+        return nil, err
+    end
+
+    local update_result = box.space.tr_instrument:update({
+        uid,
+        { "=", 15, deposit }
     })
     return update_result:tomap({ names_only = true })
 end
