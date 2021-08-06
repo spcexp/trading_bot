@@ -1,5 +1,5 @@
 return {
-    box_config = {
+    box_config     = {
         readahead           = 10 * 1024 * 1024,
         vinyl_cache         = 256 * 1024 * 1024,
         wal_max_size        = 256 * 1024 * 1024,
@@ -19,9 +19,10 @@ return {
         log_requests = true,
         log_errors   = true
     },
-    ff = {
-        path = 'https://tradernet.com/api',
+    ff             = {
+        path       = 'https://tradernet.com/api',
         public_key = 'fca84a828afdb739dfd38db9e9640b72',
-        user_id = '1727485',
+        secret_key = '',
+        user_id    = '1727485',
     }
 }

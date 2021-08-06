@@ -19,9 +19,10 @@ return {
         log_requests = true,
         log_errors   = true
     },
-    ff = {
-        path = 'https://tradernet.com/api',
+    ff             = {
+        path       = 'https://tradernet.com/api',
         public_key = 'fca84a828afdb739dfd38db9e9640b72',
-        user_id = '1727485',
+        secret_key = '',
+        user_id    = '1727485',
     }
 }

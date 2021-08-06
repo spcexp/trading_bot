@@ -24,6 +24,12 @@ local expiration = {
     gtc     = 3
 }
 
+local function count_delta_quantity(deposit, price_min, price_max, price_step, min_quantity)
+    local medium_quantity = (2 * deposit) / ((price_max - price_step)  ^ (price_max - price_step) - price_min * price_min)
+    local delta_quantity = ((medium_quantity + min_quantity) * price_step ) / (price_max - price_min)
+    return delta_quantity
+end
+
 local function count_quantity()
     --TODO
 end
