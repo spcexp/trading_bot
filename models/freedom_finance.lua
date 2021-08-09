@@ -6,9 +6,11 @@ local url         = require("net.url")
 
 local FF          = {}
 
-function FF:new()
+function FF:new(mode)
     local private = {}
     local public  = {}
+
+    private.mode = mode
 
     function private:request(url, method, cmd, params)
         local req     = {
@@ -58,31 +60,58 @@ function FF:new()
         return hmac.hmac('sha256', req_prepared, app_config.ff.secret_key)
     end
 
-    function public:query_order()
+    function public:query_order(order_id)
+        local params = {
+            mode        = private.mode,
+            active_only = 1
+        }
+        local cmd = "getNotifyOrderJson"
+        local url = app_config.ff.path .. "/v2/cmd/" .. cmd
+        local result, error = private:request(url, "POST", cmd, params)
 
+        if not result then
+            return result, error
+        end
+
+        local order
+        for _, curr_order in pairs(result.orders) do
+            if curr_order.order_id == order_id then
+                order = curr_order
+            end
+        end
+
+        if order then
+            return order
+        else
+            return nil, "Cannot find order"
+        end
     end
 
-    function public:set_order()
-
+    function public:set_order(symbol, action, order_type, quantity, limit_price, stop_price, expiration_id)
+        local params = {
+            mode          = private.mode,
+            instr_name    = symbol,
+            action_id     = action,
+            order_type_id = order_type,
+            qty           = quantity,
+            limit_price   = limit_price,
+            stop_price    = stop_price,
+            expiration_id = expiration_id
+        }
+        local cmd = "putTradeOrder"
+        local url = app_config.ff.path .. "/v2/cmd/" .. cmd
+        return private:request(url, "POST", cmd, params)
     end
-
-    function public:symbol_info()
-        local req = {
-            cmd    = 'putTradeOrder',
-            params = {
-                mode          = 'demo',
-                instr_name    = "SNGSP",
-                action_id     = 1,
-                order_type_id = 2,
-                qty           = 100,
-                limit_price   = 40,
-                stop_price    = 0,
-                expiration_id = 3,
-                userOrderId   = 146615630
-            },
-            apiKey = 'fca84a828afdb739dfd38db9e9640b72',
-            nonce  = os.time()
-        };
+    
+    function public:symbol_info(symbol)
+        local params = {
+            mode   = private.mode,
+            ticker = symbol,
+            lang   = "ru"
+        }
+        local cmd = "getStockData"
+        local url = app_config.ff.path
+        return private:request(url, "GET", cmd, params)
     end
 
     function private:prepare_request(req)
