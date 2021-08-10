@@ -117,4 +117,26 @@ function _M.stat(self)
     })
 end
 
+function _M.list(self) 
+    local inst_list, inst_error = storage.active_tr_instruments()
+
+    if inst_error then
+        return self:render({
+            json = {
+                result = false,
+                error  = inst_error
+            }
+        })
+    end
+
+    return self:render({
+        json = {
+            result = true,
+            data   = {
+                inst_data = inst_list
+            }
+        }
+    })
+end
+
 return _M

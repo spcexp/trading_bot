@@ -248,3 +248,23 @@ paths:
                     type: string
                   data:
                     type: object
+  /instr/list:
+    get:
+      tags:
+        - instr
+      summary: get list of instruments
+      operationId: list
+      responses:
+        200:
+          description: return list of instruments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  error:
+                    type: string
+                  data:
+                    type: object

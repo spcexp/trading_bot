@@ -231,4 +231,14 @@ function storage.set_current_deposit(uid, deposit)
     return update_result:tomap({ names_only = true })
 end
 
+
+function storage.active_tr_instruments()
+    local instrs, err = box.space.tr_instrument.index.active:select { true }
+    if err then
+        return nil, err
+    end
+
+    return instrs:tomap({ names_only = true })
+end
+
 return storage
