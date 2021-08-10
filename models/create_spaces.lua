@@ -76,8 +76,8 @@ function _M.create()
     orders:create_index("trin_uid", { type = "tree", parts = { 2, "uuid" },                              unique = false })
     orders:create_index("uniq",     { type = "tree", parts = { 2, "uuid", 6, "number", 10, "string" },   unique = false })
     orders:create_index("type",     { type = "tree", parts = { 5, "string" },                            unique = false })
-    orders:create_index("buy_uid",  { type = "tree", parts = { 7, "uuid" },                              unique = false })
-    orders:create_index("time",     { type = "tree", parts = { 8, "string" },                            unique = false })
+    orders:create_index("buy_uid",  { type = "tree", parts = { 8, "uuid" },                              unique = false })
+    orders:create_index("time",     { type = "tree", parts = { 9, "string" },                            unique = false })
 
     box.schema.user.grant("guest", "read,write,execute", "universe")
 end

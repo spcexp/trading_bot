@@ -2,6 +2,7 @@
 local openapi = require("gtn.openapi")
 
 require("modules.init")
+--require("daemons.trade")
 
 local app = openapi(
         require("http.server"),

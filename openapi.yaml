@@ -3,7 +3,7 @@ info:
   version: "1.0"
   title: "trading bot"
 servers:
-  - url: http://localhost:8080/
+  - url: http://localhost:8081/
     description: 'test'
   - url: http://localhost:{port}/
     description: 'development'
@@ -11,16 +11,7 @@ servers:
       path:
         default: 'api/v1.0'
       port:
-        default: '8080'
-  - url: '/'#TODO
-    description: 'staging'
-    variables:
-      path:
-        default: 'api/v1.0'
-      socket:
-        default: 'tr_bot.dev.sock'
-      socketPath:
-        default: 'tmp'
+        default: '8081'
   - url: '/'#TODO
     description: 'production'
     variables:
